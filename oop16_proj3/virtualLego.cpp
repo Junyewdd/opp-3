@@ -26,6 +26,11 @@ ID3DXFont* g_pFont = NULL;
 const int Width = 1024;
 const int Height = 768;
 
+// 마지막 점수
+int lastScore = 1;
+
+int flag3cushion = false;
+
 int turn = 0;
 int flag1 = 0;
 int flag2 = 0;
@@ -411,46 +416,38 @@ public:
 	//충돌 시 작업
 	void hitBy(CSphere& ball)
 	{
-		//점수 임의 세팅
-		int lastScore = 15;
-		int score = 14;
-		boolean flag = false;
+		
 
-		if (lastScore == 15)flag = true;
+		//마지막 점수
+		if ((turn == 0 && num1 == lastScore - 1) || (turn == 1 && num2 == lastScore - 1))flag3cushion = true;
 
 		// Insert your code here.
 		if (hasIntersected(ball)) {
 			if ((ball.getCenter().x >= 4.28)) {
 				ball.setPower(-ball.getVelocity_X(), ball.getVelocity_Z());
 				ball.setCenter(4.27, ball.getCenter().y, ball.getCenter().z);
-				if (flag)ball.addNumOfWallHit();
+				if (flag3cushion)ball.addNumOfWallHit();
 			}
 			else if (ball.getCenter().x <= -4.28) {
 				ball.setPower(-ball.getVelocity_X(), ball.getVelocity_Z());
 				ball.setCenter(-4.27, ball.getCenter().y, ball.getCenter().z);
-				if (flag)ball.addNumOfWallHit();
+				if (flag3cushion)ball.addNumOfWallHit();
 			}
 
 			else if (ball.getCenter().z >= 2.78) {
 				ball.setPower(ball.getVelocity_X(), -ball.getVelocity_Z());
 				ball.setCenter(ball.getCenter().x, ball.getCenter().y, 2.77);
-				if (flag)ball.addNumOfWallHit();
+				if (flag3cushion)ball.addNumOfWallHit();
 			}
 			else if (ball.getCenter().z <= -2.78) {
 				ball.setPower(ball.getVelocity_X(), -ball.getVelocity_Z());
 				ball.setCenter(ball.getCenter().x, ball.getCenter().y, -2.77);
-				if (flag)ball.addNumOfWallHit();
+				if (flag3cushion)ball.addNumOfWallHit();
 			}
 		}
 		if (ball.getNumOfWallHitted() == 3) {
-			//exit(0);
+			exit(0);
 		}
-		else {
-			// 턴 바뀌면 howManyHit 초기화시키기
-			//howManyHit = 0;
-			flag = false;
-		}
-
 	}
 
 	void setPosition(float x, float y, float z)
@@ -737,6 +734,7 @@ bool Display(float timeDelta)
 				flag1 = 0;
 				flag2 = 0;
 				flag3 = 0;
+				flag3cushion = false; //턴 바뀌면 초기화
 				turn = 1 - turn;
 				spaceCmp++;
 			}
@@ -744,6 +742,7 @@ bool Display(float timeDelta)
 				flag3 = 0;
 				num1--;
 				turn = 1 - turn;
+				flag3cushion = false; //턴 바뀌면 초기화
 				spaceCmp = spaceCnt;
 			}
 		}
@@ -764,12 +763,14 @@ bool Display(float timeDelta)
 				flag1 = 0;
 				flag2 = 0;
 				flag3 = 0;
+				flag3cushion = false; //턴 바뀌면 초기화
 				turn = 1 - turn;
 				spaceCmp++;
 			}
 			else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
 				flag3 = 0;
 				num2--;
+				flag3cushion = false; //턴 바뀌면 초기화
 				turn = 1 - turn;
 				spaceCmp = spaceCnt;
 			}
