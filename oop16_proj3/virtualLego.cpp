@@ -29,7 +29,9 @@ const int Height = 768;
 int turn = 0;
 int flag1 = 0;
 int flag2 = 0;
-
+int flag3 = 0;//적 공이랑 부딪혔을 때
+int spaceCnt = 0;
+int spaceCmp = spaceCnt;
 // There are four balls
 // initialize the position (coordinate) of each ball (ball0 ~ ball3)
 const float spherePos[4][2] = { {-2.7f,0} , {+2.4f,0} , {3.3f,0} , {-2.7f,-0.9f}}; 
@@ -51,47 +53,105 @@ D3DXMATRIX g_mProj;
 int num1 = 0;
 int num2 = 0;
 
-void InitFont(IDirect3DDevice9* pDevice) {
-	D3DXFONT_DESC fontDesc;
-	ZeroMemory(&fontDesc, sizeof(D3DXFONT_DESC));
-	fontDesc.Height = 24;  // 글자 크기
-	fontDesc.Width = 0;
-	fontDesc.Weight = 0;
-	fontDesc.MipLevels = 1;
-	fontDesc.Italic = false;
-	fontDesc.CharSet = DEFAULT_CHARSET;
-	fontDesc.OutputPrecision = OUT_DEFAULT_PRECIS;
-	fontDesc.Quality = DEFAULT_QUALITY;
-	fontDesc.PitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
-	strcpy_s(fontDesc.FaceName, LF_FACESIZE, "Arial");
+class Text {
+public:
+	std::string playerNum;
+	Text(std::string num) {
+		playerNum = num;
+	}
+	void InitFont(IDirect3DDevice9* pDevice) {
+		D3DXFONT_DESC fontDesc;
+		ZeroMemory(&fontDesc, sizeof(D3DXFONT_DESC));
+		fontDesc.Height = 24;  // 글자 크기
+		fontDesc.Width = 0;
+		fontDesc.Weight = 0;
+		fontDesc.MipLevels = 1;
+		fontDesc.Italic = false;
+		fontDesc.CharSet = DEFAULT_CHARSET;
+		fontDesc.OutputPrecision = OUT_DEFAULT_PRECIS;
+		fontDesc.Quality = DEFAULT_QUALITY;
+		fontDesc.PitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+		strcpy_s(fontDesc.FaceName, LF_FACESIZE, "Arial");
 
-	D3DXCreateFontIndirect(pDevice, &fontDesc, &g_pFont);
-}
+		D3DXCreateFontIndirect(pDevice, &fontDesc, &g_pFont);
+	}
 
-// Function to draw text on the screen
-void DrawText(IDirect3DDevice9* pDevice, const char* text, int x, int y) {
-	RECT rect;
-	SetRect(&rect, x, y, 0, 0);
-	g_pFont->DrawText(NULL, text, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 255));
+	// Function to draw text on the screen
+	void DrawText(IDirect3DDevice9* pDevice, int x, int y) {
+		RECT rect;
+		// 문자열 생성
+		char buffer[64];
+		if (playerNum == "player1") {
+			sprintf_s(buffer, sizeof(buffer), "player1: %d", num1);
 
+			// num 표시될 좌표
+			int numX = x;
+			int numY = y + 30;
 
-	// 문자열 생성
-	char buffer[64];
-	sprintf_s(buffer, sizeof(buffer), "Player1: %d, Player2: %d", num1, num2);
+			// num을 출력
+			SetRect(&rect, numX, numY, 0, 0);
+			if (turn == 1) {
+				g_pFont->DrawText(NULL, buffer, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 255));
+			}
+			else {
+				g_pFont->DrawText(NULL, buffer, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(0, 0, 0));
+			}
+		}
+		if (playerNum == "player2") {
+			sprintf_s(buffer, sizeof(buffer), "player2: %d", num2);
 
-	// num 표시될 좌표
-	int numX = x;
-	int numY = y + 30;
+			// num 표시될 좌표
+			int numX = x;
+			int numY = y + 30;
 
-	// num을 출력
-	SetRect(&rect, numX, numY, 0, 0);
-	g_pFont->DrawText(NULL, buffer, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 255));
-}
+			// num을 출력
+			SetRect(&rect, numX, numY, 0, 0);
+			if (turn == 0) {
+				g_pFont->DrawText(NULL, buffer, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 255));
+			}
+			else {
+				g_pFont->DrawText(NULL, buffer, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(0, 0, 0));
+			}
+		}
+	}
 
-void RenderText() {
-	DrawText(Device, "Score", 10, 10);
-}
+	void RenderText(int x, int y) {
+		DrawText(Device, x, y);
+	}
+};
+class Score {
+public:
+	void InitFont(IDirect3DDevice9* pDevice) {
+		D3DXFONT_DESC fontDesc;
+		ZeroMemory(&fontDesc, sizeof(D3DXFONT_DESC));
+		fontDesc.Height = 24;  // 글자 크기
+		fontDesc.Width = 0;
+		fontDesc.Weight = 0;
+		fontDesc.MipLevels = 1;
+		fontDesc.Italic = false;
+		fontDesc.CharSet = DEFAULT_CHARSET;
+		fontDesc.OutputPrecision = OUT_DEFAULT_PRECIS;
+		fontDesc.Quality = DEFAULT_QUALITY;
+		fontDesc.PitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+		strcpy_s(fontDesc.FaceName, LF_FACESIZE, "Arial");
 
+		D3DXCreateFontIndirect(pDevice, &fontDesc, &g_pFont);
+	}
+
+	// Function to draw text on the screen
+	void DrawText(IDirect3DDevice9* pDevice, const char* text, int x, int y) {
+		RECT rect;
+		SetRect(&rect, x, y, 0, 0);
+		g_pFont->DrawText(NULL, text, -1, &rect, DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 255));
+	}
+
+	void RenderText(const char* text, int x, int y) {
+		DrawText(Device, text, x, y);
+	}
+};
+Text player1("player1");
+Text player2("player2");
+Score score;
 // -----------------------------------------------------------------------------
 // CSphere class definition
 // -----------------------------------------------------------------------------
@@ -383,7 +443,7 @@ public:
 			}
 		}
 		if (ball.getNumOfWallHitted() == 3) {
-			exit(0);
+			//exit(0);
 		}
 		else {
 			// 턴 바뀌면 howManyHit 초기화시키기
@@ -590,8 +650,12 @@ bool Setup()
 	
 	g_light.setLight(Device, g_mWorld);
 
-	InitFont(Device);
-	RenderText();
+	score.InitFont(Device);
+	player1.InitFont(Device);
+	player1.RenderText(10, 10);
+	player2.InitFont(Device);
+	player2.RenderText(150, 10);
+	score.RenderText("score", 10, 10);
 	return true;
 }
 
@@ -643,37 +707,72 @@ bool Display(float timeDelta)
 		else if (turn == 0 && g_sphere[3].hasIntersected(g_sphere[1])) {
 			flag2++;
 		}
+		else if (turn == 0 && g_sphere[3].hasIntersected(g_sphere[2])) {
+			flag3++;
+		}
 		if (turn == 1 && g_sphere[2].hasIntersected(g_sphere[0])) {
 			flag1++;
 		}
 		else if (turn == 1 && g_sphere[2].hasIntersected(g_sphere[1])) {
 			flag2++;
 		}
+		else if (turn == 1 && g_sphere[2].hasIntersected(g_sphere[3])) {
+			flag3++;
+		}
 		if (turn == 0 && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
-			if (flag1 >= 1 && flag2 >= 1) {
+
+			if (flag1 >= 1 && flag2 >= 1 && flag3 == 0) {
 				num1++;
 				flag1 = 0;
 				flag2 = 0;
+				spaceCmp++;
+			}
+			else if (flag1 >= 1 && flag2 >= 1 && flag3 >= 1) {
+				flag1 = 0;
+				flag2 = 0;
+				flag3 = 0;
+				spaceCmp++;
 			}
 			else if ((flag1 >= 1 && flag2 == 0) || (flag1 == 0 && flag2 >= 1)) {
 				flag1 = 0;
 				flag2 = 0;
+				flag3 = 0;
 				turn = 1 - turn;
+				spaceCmp++;
 			}
-			//아무것도 못 맞혔을 때 구현
+			else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
+				flag3 = 0;
+				num1--;
+				turn = 1 - turn;
+				spaceCmp = spaceCnt;
+			}
 		}
 		if (turn == 1 && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
-			if (flag1 >= 1 && flag2 >= 1) {
+			if (flag1 >= 1 && flag2 >= 1 && flag3 == 0) {
 				num2++;
 				flag1 = 0;
 				flag2 = 0;
+				spaceCmp++;
+			}
+			else if (flag1 >= 1 && flag2 >= 1 && flag3 >= 1) {
+				flag3 = 0;
+				flag1 = 0;
+				flag2 = 0;
+				spaceCmp++;
 			}
 			else if ((flag1 >= 1 && flag2 == 0) || (flag1 == 0 && flag2 >= 1)) {
 				flag1 = 0;
 				flag2 = 0;
+				flag3 = 0;
 				turn = 1 - turn;
+				spaceCmp++;
 			}
-			//아무것도 못 맞혔을 때 구현
+			else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
+				flag3 = 0;
+				num2--;
+				turn = 1 - turn;
+				spaceCmp = spaceCnt;
+			}
 		}
 		// draw plane, walls, and spheres
 		g_legoPlane.draw(Device, g_mWorld);
@@ -683,8 +782,9 @@ bool Display(float timeDelta)
 		}
 		g_target_blueball.draw(Device, g_mWorld);
         g_light.draw(Device);
-		RenderText();
-
+		score.RenderText("score", 10, 10);
+		player1.RenderText(10, 10);
+		player2.RenderText(150, 10);
 		Device->EndScene();
 		Device->Present(0, 0, 0, 0);
 		Device->SetTexture( 0, NULL );
@@ -720,27 +820,29 @@ LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 }
                 break;
             case VK_SPACE:
-				
-				D3DXVECTOR3 targetpos = g_target_blueball.getCenter();
-				D3DXVECTOR3	whitepos = g_sphere[3].getCenter();
-				D3DXVECTOR3 yellowpos = g_sphere[2].getCenter();
-				if (turn == 0) {
-					double theta = acos(sqrt(pow(targetpos.x - whitepos.x, 2)) / sqrt(pow(targetpos.x - whitepos.x, 2) +
-						pow(targetpos.z - whitepos.z, 2)));		// 기본 1 사분면
-					if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x >= 0) { theta = -theta; }	//4 사분면
-					if (targetpos.z - whitepos.z >= 0 && targetpos.x - whitepos.x <= 0) { theta = PI - theta; } //2 사분면
-					if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x <= 0) { theta = PI + theta; } // 3 사분면
-					double distance = sqrt(pow(targetpos.x - whitepos.x, 2) + pow(targetpos.z - whitepos.z, 2));
-					g_sphere[3].setPower(distance * cos(theta), distance * sin(theta));
-				}
-				else {
-					double theta = acos(sqrt(pow(targetpos.x - yellowpos.x, 2)) / sqrt(pow(targetpos.x - yellowpos.x, 2) +
-						pow(targetpos.z - yellowpos.z, 2)));		// 기본 1 사분면
-					if (targetpos.z - yellowpos.z <= 0 && targetpos.x - yellowpos.x >= 0) { theta = -theta; }	//4 사분면
-					if (targetpos.z - yellowpos.z >= 0 && targetpos.x - yellowpos.x <= 0) { theta = PI - theta; } //2 사분면
-					if (targetpos.z - yellowpos.z <= 0 && targetpos.x - yellowpos.x <= 0) { theta = PI + theta; } // 3 사분면
-					double distance = sqrt(pow(targetpos.x - yellowpos.x, 2) + pow(targetpos.z - yellowpos.z, 2));
-					g_sphere[2].setPower(distance * cos(theta), distance * sin(theta));
+				if (g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
+					D3DXVECTOR3 targetpos = g_target_blueball.getCenter();
+					D3DXVECTOR3	whitepos = g_sphere[3].getCenter();
+					D3DXVECTOR3 yellowpos = g_sphere[2].getCenter();
+					if (turn == 0) {
+						double theta = acos(sqrt(pow(targetpos.x - whitepos.x, 2)) / sqrt(pow(targetpos.x - whitepos.x, 2) +
+							pow(targetpos.z - whitepos.z, 2)));		// 기본 1 사분면
+						if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x >= 0) { theta = -theta; }	//4 사분면
+						if (targetpos.z - whitepos.z >= 0 && targetpos.x - whitepos.x <= 0) { theta = PI - theta; } //2 사분면
+						if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x <= 0) { theta = PI + theta; } // 3 사분면
+						double distance = sqrt(pow(targetpos.x - whitepos.x, 2) + pow(targetpos.z - whitepos.z, 2));
+						g_sphere[3].setPower(distance * cos(theta), distance * sin(theta));
+					}
+					else {
+						double theta = acos(sqrt(pow(targetpos.x - yellowpos.x, 2)) / sqrt(pow(targetpos.x - yellowpos.x, 2) +
+							pow(targetpos.z - yellowpos.z, 2)));		// 기본 1 사분면
+						if (targetpos.z - yellowpos.z <= 0 && targetpos.x - yellowpos.x >= 0) { theta = -theta; }	//4 사분면
+						if (targetpos.z - yellowpos.z >= 0 && targetpos.x - yellowpos.x <= 0) { theta = PI - theta; } //2 사분면
+						if (targetpos.z - yellowpos.z <= 0 && targetpos.x - yellowpos.x <= 0) { theta = PI + theta; } // 3 사분면
+						double distance = sqrt(pow(targetpos.x - yellowpos.x, 2) + pow(targetpos.z - yellowpos.z, 2));
+						g_sphere[2].setPower(distance * cos(theta), distance * sin(theta));
+					}
+					spaceCnt++;
 				}
 				break;
 
