@@ -168,7 +168,7 @@ private:
     float                   m_radius; //반지름
     float               m_velocity_x; //x방향 속도
     float               m_velocity_z; //z방향 속도
-    int                  howManyHitBall; //벽 몇 번 쳤는지
+    int                  howManyHitWall; //벽 몇 번 쳤는지
 
 
 public:
@@ -220,7 +220,6 @@ public:
         pDevice->SetMaterial(&m_mtrl);
         m_pSphereMesh->DrawSubset(0);
     }
-
     // 두 구 사이에 충돌이 있는지 확인
     bool hasIntersected(CSphere& ball)
     {
@@ -260,13 +259,14 @@ public:
         // Insert your code here.
     }
     void addNumOfWallHit() {
-        howManyHitBall++;
+        howManyHitWall++;
+
     }
     int getNumOfWallHitted() {
-        return howManyHitBall;
+        return howManyHitWall;
     }
     void setNumOfWallHitted(int num) {
-        howManyHitBall = 0;
+        howManyHitWall = 0;
     }
 
     void ballUpdate(float timeDiff)
@@ -335,6 +335,8 @@ private:
 
 };
 
+CSphere   g_sphere[4];
+CSphere   g_target_blueball;
 
 
 // -----------------------------------------------------------------------------
@@ -414,6 +416,7 @@ public:
         }
         return false;
     }
+   
     //충돌 시 작업
     void hitBy(CSphere& ball)
     {
@@ -427,23 +430,23 @@ public:
             if ((ball.getCenter().x >= 4.28)) {
                 ball.setPower(-ball.getVelocity_X(), ball.getVelocity_Z());
                 ball.setCenter(4.27, ball.getCenter().y, ball.getCenter().z);
-                if (flag3cushion)ball.addNumOfWallHit();
+                if (flag3cushion && ((turn == 0 && ball.getCenter() == g_sphere[3].getCenter()) || (turn == 1 && ball.getCenter() == g_sphere[2].getCenter()))) { ball.addNumOfWallHit(); }
             }
             else if (ball.getCenter().x <= -4.28) {
                 ball.setPower(-ball.getVelocity_X(), ball.getVelocity_Z());
                 ball.setCenter(-4.27, ball.getCenter().y, ball.getCenter().z);
-                if (flag3cushion)ball.addNumOfWallHit();
+                if (flag3cushion && ((turn == 0 && ball.getCenter() == g_sphere[3].getCenter()) || (turn == 1 && ball.getCenter() == g_sphere[2].getCenter()))) { ball.addNumOfWallHit(); }
             }
 
             else if (ball.getCenter().z >= 2.78) {
                 ball.setPower(ball.getVelocity_X(), -ball.getVelocity_Z());
                 ball.setCenter(ball.getCenter().x, ball.getCenter().y, 2.77);
-                if (flag3cushion)ball.addNumOfWallHit();
+                if (flag3cushion && ((turn == 0 && ball.getCenter() == g_sphere[3].getCenter()) || (turn == 1 && ball.getCenter() == g_sphere[2].getCenter()))) { ball.addNumOfWallHit(); }
             }
             else if (ball.getCenter().z <= -2.78) {
                 ball.setPower(ball.getVelocity_X(), -ball.getVelocity_Z());
                 ball.setCenter(ball.getCenter().x, ball.getCenter().y, -2.77);
-                if (flag3cushion)ball.addNumOfWallHit();
+                if (flag3cushion && ((turn == 0 && ball.getCenter() == g_sphere[3].getCenter()) || (turn == 1 && ball.getCenter() == g_sphere[2].getCenter()))) { ball.addNumOfWallHit(); }
             }
         }
         if (ball.getNumOfWallHitted() >= 3) {
@@ -577,8 +580,7 @@ private:
 // -----------------------------------------------------------------------------
 CWall   g_legoPlane;
 CWall   g_legowall[4];
-CSphere   g_sphere[4];
-CSphere   g_target_blueball;
+
 CLight   g_light;
 
 double g_camera_pos[3] = { 0.0, 5.0, -8.0 };
@@ -730,62 +732,90 @@ bool Display(float timeDelta)
             flag3++;
         }
         if (turn == 0 && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
-
-            if (flag1 >= 1 && flag2 >= 1 && flag3 == 0) {
-                num1++;
-                flag1 = 0;
-                flag2 = 0;
-                spaceCmp++;
+            if (flag3 == 0) {
+                if (flag1 >= 1 && flag2 >= 1) {
+                    num1++;
+                    flag1 = 0;
+                    flag2 = 0;
+                    spaceCmp++;
+                }
+                else if ((flag1 >= 1 && flag2 == 0) || (flag1 == 0 && flag2 >= 1)) {
+                    flag1 = 0;
+                    flag2 = 0;
+                    flag3 = 0;
+                    flag3cushion = false; //턴 바뀌면 초기화
+                    exitflag = 0;
+                    turn = 1 - turn;
+                    exitflag = 0;
+                    spaceCmp++;
+                }
+                else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
+                    flag3 = 0;
+                    num1--;
+                    if (num1 < 0) {
+                        num1 = 0;
+                    }
+                    turn = 1 - turn;
+                    exitflag = 0;
+                    flag3cushion = false; //턴 바뀌면 초기화
+                    spaceCmp = spaceCnt;
+                }
             }
-            else if (flag1 >= 1 && flag2 >= 1 && flag3 >= 1) {
-                flag1 = 0;
-                flag2 = 0;
-                flag3 = 0;
-                spaceCmp++;
-            }
-            else if ((flag1 >= 1 && flag2 == 0) || (flag1 == 0 && flag2 >= 1)) {
-                flag1 = 0;
-                flag2 = 0;
-                flag3 = 0;
-                flag3cushion = false; //턴 바뀌면 초기화
-                turn = 1 - turn;
-                spaceCmp++;
-            }
-            else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
-                flag3 = 0;
+            else {
                 num1--;
+                if (num1 < 0) {
+                    num1 = 0;
+                }
+                flag1 = 0;
+                flag2 = 0;
+                flag3 = 0;
                 turn = 1 - turn;
+                exitflag = 0;
                 flag3cushion = false; //턴 바뀌면 초기화
-                spaceCmp = spaceCnt;
+                spaceCmp++;
             }
         }
         if (turn == 1 && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
-            if (flag1 >= 1 && flag2 >= 1 && flag3 == 0) {
-                num2++;
-                flag1 = 0;
-                flag2 = 0;
-                spaceCmp++;
+            if (flag3 == 0) {
+                if (flag1 >= 1 && flag2 >= 1) {
+                    num2++;
+                    flag1 = 0;
+                    flag2 = 0;
+                    spaceCmp++;
+                }
+                else if ((flag1 >= 1 && flag2 == 0) || (flag1 == 0 && flag2 >= 1)) {
+                    flag1 = 0;
+                    flag2 = 0;
+                    flag3 = 0;
+                    flag3cushion = false; //턴 바뀌면 초기화
+                    turn = 1 - turn;
+                    exitflag = 0;
+                    spaceCmp++;
+                }
+                else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
+                    flag3 = 0;
+                    num2--;
+                    if (num2 < 0) {
+                        num2 = 0;
+                    }
+                    turn = 1 - turn;
+                    exitflag = 0;
+                    flag3cushion = false; //턴 바뀌면 초기화
+                    spaceCmp = spaceCnt;
+                }
             }
-            else if (flag1 >= 1 && flag2 >= 1 && flag3 >= 1) {
-                flag3 = 0;
-                flag1 = 0;
-                flag2 = 0;
-                spaceCmp++;
-            }
-            else if ((flag1 >= 1 && flag2 == 0) || (flag1 == 0 && flag2 >= 1)) {
-                flag1 = 0;
-                flag2 = 0;
-                flag3 = 0;
-                flag3cushion = false; //턴 바뀌면 초기화
-                turn = 1 - turn;
-                spaceCmp++;
-            }
-            else if (flag1 == 0 && flag2 == 0 && spaceCmp != spaceCnt) {
-                flag3 = 0;
+            else {
                 num2--;
-                flag3cushion = false; //턴 바뀌면 초기화
+                if (num2 < 0) {
+                    num2 = 0;
+                }
+                flag1 = 0;
+                flag2 = 0;
+                flag3 = 0;
                 turn = 1 - turn;
-                spaceCmp = spaceCnt;
+                exitflag = 0;
+                flag3cushion = false; //턴 바뀌면 초기화
+                spaceCmp++;
             }
         }
         if (exitflag == 2 && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
