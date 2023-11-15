@@ -2,18 +2,18 @@
   virtualLego.cpp
 C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\d3dUtility.h(23,1): warning C4005: 'INFINITY': 매크로 재정의
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_math.h(88): message : 'INFINITY'의 이전 정의를 참조하십시오.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(268,1): warning C4305: '초기화 중': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(281,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(283,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(285,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(274,1): warning C4305: '초기화 중': 'double'에서 'float'(으)로 잘립니다.
 C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(287,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(304,24): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(305,24): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(425,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(430,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(436,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(441,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(466,33): warning C4305: 'return': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(890,18): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(891,18): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(289,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(291,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(293,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(310,30): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(311,30): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(429,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(434,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(440,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(445,1): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(476,33): warning C4305: 'return': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(909,29): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\virtualLego.cpp(910,29): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   VirtualLego.vcxproj -> C:\Users\e\Desktop\2학년 2학기\객지프\oop-project3\oop16_proj3\Debug\VirtualLego.exe

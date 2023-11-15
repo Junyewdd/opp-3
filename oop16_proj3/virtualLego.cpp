@@ -57,10 +57,11 @@ D3DXMATRIX g_mProj;
 
 int num1 = 0;
 int num2 = 0;
-bool exitflag = false;
+int exitflag = 0;
 class Text {
-public:
+private:
     std::string playerNum;
+public:
     Text(std::string num) {
         playerNum = num;
     }
@@ -129,9 +130,9 @@ public:
     void InitFont(IDirect3DDevice9* pDevice) {
         D3DXFONT_DESC fontDesc;
         ZeroMemory(&fontDesc, sizeof(D3DXFONT_DESC));
-        fontDesc.Height = 24;  // 글자 크기
-        fontDesc.Width = 0;
-        fontDesc.Weight = 0;
+        fontDesc.Height = 50;  // 글자 크기
+        fontDesc.Width = 10;
+        fontDesc.Weight = 10;
         fontDesc.MipLevels = 1;
         fontDesc.Italic = false;
         fontDesc.CharSet = DEFAULT_CHARSET;
@@ -446,9 +447,19 @@ public:
             }
         }
         if (ball.getNumOfWallHitted() >= 3) {
-            if (flag1 >= 1 && flag2 >= 1 && flag3 == 0) {
-                exitflag = true;
+            if (exitflag == 0 && flag1 >= 1 && flag2 == 0 && flag3 == 0) {
+                exitflag++;
             }
+            else if (exitflag == 1 && flag1 >= 1 && flag2 >= 1 && flag3 == 0) {
+                exitflag++;
+            }
+            else if (exitflag == 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0) {
+                exitflag++;
+            }
+            else if (exitflag == 1 && flag1 >= 0 && flag2 >= 1 && flag3 == 0) {
+                exitflag++;
+            }
+
         }
     }
 
@@ -651,10 +662,10 @@ bool Setup()
 
     score.InitFont(Device);
     player1.InitFont(Device);
-    player1.RenderText(10, 10);
+    player1.RenderText(380, 10);
     player2.InitFont(Device);
-    player2.RenderText(150, 10);
-    score.RenderText("score", 10, 10);
+    player2.RenderText(540, 10);
+    score.RenderText("score", 480, 10);
     return true;
 }
 
@@ -777,7 +788,7 @@ bool Display(float timeDelta)
                 spaceCmp = spaceCnt;
             }
         }
-        if (exitflag && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
+        if (exitflag == 2 && g_sphere[0].getVelocity_X() == 0 && g_sphere[0].getVelocity_Z() == 0 && g_sphere[1].getVelocity_X() == 0 && g_sphere[1].getVelocity_Z() == 0 && g_sphere[2].getVelocity_X() == 0 && g_sphere[2].getVelocity_Z() == 0 && g_sphere[3].getVelocity_X() == 0 && g_sphere[3].getVelocity_Z() == 0) {
             exit(0);
         }
         // draw plane, walls, and spheres
@@ -788,9 +799,9 @@ bool Display(float timeDelta)
         }
         g_target_blueball.draw(Device, g_mWorld);
         g_light.draw(Device);
-        score.RenderText("score", 10, 10);
-        player1.RenderText(10, 10);
-        player2.RenderText(150, 10);
+        score.RenderText("score", 480, 10);
+        player1.RenderText(380, 10);
+        player2.RenderText(540, 10);
         Device->EndScene();
         Device->Present(0, 0, 0, 0);
         Device->SetTexture(0, NULL);
