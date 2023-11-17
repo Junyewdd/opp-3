@@ -27,7 +27,7 @@ const int Width = 1024;
 const int Height = 768;
 
 // 마지막 점수
-int lastScore = 1;
+int lastScore = 15;
 
 int flag3cushion = false;
 
@@ -560,7 +560,12 @@ public:
         D3DXMATRIX m;
         D3DXMatrixTranslation(&m, m_lit.Position.x, m_lit.Position.y, m_lit.Position.z);
         pDevice->SetTransform(D3DTS_WORLD, &m);
-        pDevice->SetMaterial(&d3d::WHITE_MTRL);
+        if (turn == 0) {
+            pDevice->SetMaterial(&d3d::WHITE_MTRL);
+        }
+        else {
+            pDevice->SetMaterial(&d3d::YELLOW_MTRL);
+        }
         m_pMesh->DrawSubset(0);
     }
 
